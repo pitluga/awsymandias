@@ -445,7 +445,8 @@ describe Instance = Awsymandias::EC2::Instance do
       stub_connection_with DESCRIBE_INSTANCES_SINGLE_RESULT_RUNNING_XML
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
       Net::Telnet.should_receive(:new).with("Host" => "ec2-174-129-118-52.compute-1.amazonaws.com",
-                                            "Port" => 100).and_return(true)
+                                            "Port" => 100,
+                                            "Timeout" => 5).and_return(true)
       instance.port_open?(100).should be_true
     end
 
@@ -453,7 +454,8 @@ describe Instance = Awsymandias::EC2::Instance do
       stub_connection_with DESCRIBE_INSTANCES_SINGLE_RESULT_RUNNING_XML
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
       Net::Telnet.should_receive(:new).with("Host" => "ec2-174-129-118-52.compute-1.amazonaws.com",
-                                            "Port" => 100).and_raise(Timeout::Error)
+                                            "Port" => 100,
+                                            "Timeout" => 5).and_raise(Timeout::Error)
       instance.port_open?(100).should be_false
     end
   end

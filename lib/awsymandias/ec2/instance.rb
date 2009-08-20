@@ -22,9 +22,12 @@ module Awsymandias
       end
 
       def port_open?(port)
-        Net::Telnet.new("Host" => public_dns, "Port" => port) && true rescue false
+        Net::Telnet.new("Host" => public_dns, "Port" => port, "Timeout" => 5) 
+        true
+      rescue Timeout::Error, Errno::ECONNREFUSED
+        false
       end
-
+      
       def terminated?
         instance_state.name == "terminated"
       end
