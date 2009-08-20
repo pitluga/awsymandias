@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'spec'
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/awsymandias")
+require File.expand_path(File.dirname(__FILE__) + "/../../../lib/awsymandias")
 
 describe Instance = Awsymandias::EC2::Instance do
 
