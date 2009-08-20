@@ -17,6 +17,21 @@ describe Awsymandias do
       end
     end
   end
+
+  describe "wait_for" do
+    it "should not sleep if the block returns true" do
+      Awsymandias.should_receive(:sleep).never
+      Awsymandias.wait_for("message", 5) { true }
+    end
+    
+    it "should sleep for the specified number of seconds until the block returns true" do
+      responses = [true, false, false]
+      Awsymandias.stub!(:sleep)
+      Awsymandias.should_receive(:sleep).twice.with(10)
+      Awsymandias.wait_for("message", 10) { responses.pop }
+    end
+  end
+  
   
   describe Awsymandias::EC2 do    
     def zero_dollars

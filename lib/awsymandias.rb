@@ -15,6 +15,9 @@ require File.dirname(__FILE__) + '/awsymandias/ec2/application_stack'
 module Awsymandias
   class << self
     attr_writer :access_key_id, :secret_access_key
+    attr_accessor :verbose
+  
+    Awsymandias.verbose = false
     
     def access_key_id
       @access_key_id || AMAZON_ACCESS_KEY_ID || ENV['AMAZON_ACCESS_KEY_ID'] 
@@ -23,6 +26,20 @@ module Awsymandias
     def secret_access_key
       @secret_access_key || AMAZON_SECRET_ACCESS_KEY || ENV['AMAZON_SECRET_ACCESS_KEY']
     end
+    
+    def wait_for(message, refresh_seconds, &block)
+      print "Waiting for #{message}.." if Awsymandias.verbose
+      while !block.call
+        print "." if Awsymandias.verbose
+        sleep(refresh_seconds)      
+      end
+      verbose_output "OK!"
+    end
+    
+    def verbose_output(message)
+      puts message if Awsymandias.verbose
+    end
+    
   end
   
   module EC2
