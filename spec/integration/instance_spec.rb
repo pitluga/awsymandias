@@ -9,7 +9,7 @@ describe 'a launched instance' do
     Awsymandias.secret_access_key = ENV['AMAZON_SECRET_ACCESS_KEY']
     
     @stack = Awsymandias::EC2::ApplicationStack.new('instances') do |s|
-      s.role :box,  :image_id => 'ami-20b65349'
+      s.instance :box,  :image_id => 'ami-20b65349'
     end
     
     @stack.launch

@@ -1,7 +1,7 @@
 module Awsymandias
   module EC2
     class ApplicationStack
-      attr_reader :name, :roles, :sdb_domain
+      attr_reader :name, :instances, :sdb_domain
 
       DEFAULT_SDB_DOMAIN = "application-stack"
 
@@ -20,25 +20,25 @@ module Awsymandias
       end
 
       def initialize(name, opts={})
-        opts.assert_valid_keys! :roles
+        opts.assert_valid_keys! :instances
 
         @name       = name
-        @roles      = opts[:roles] || {}
+        @instances  = opts[:instances] || {}
         @sdb_domain = opts[:sdb_domain] || DEFAULT_SDB_DOMAIN
         @running_instances  = {}
         yield self if block_given?
       end
 
-      def role(*names)
+      def instance(*names)
         opts = names.extract_options!
         names.each do |name|
-          @roles[name] = opts
+          @instances[name] = opts
           self.metaclass.send(:define_method, name) { @running_instances[name] }
         end
       end
 
       def launch
-        @roles.each do |name, params| # TODO Optimize this for a single remote call.
+        @instances.each do |name, params| # TODO Optimize this for a single remote call.
           @running_instances[name] = Awsymandias::EC2::Instance.launch(params)
         end
         store_role_to_instance_id_mapping!
