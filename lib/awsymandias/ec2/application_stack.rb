@@ -1,10 +1,3 @@
-# Goal:
-# stack = EC2::ApplicationStack.new do |stack|
-#   stack.role "db", :instance_type => EC2::InstanceTypes::C1_XLARGE, :image_id => "ami-3576915c"
-#   stack.role "app1", "app2", "app3", :instance_type => EC2::InstanceType::M1_XLARGE, :image_id => "ami-dc789fb5"
-#   stack.role "memcache", :instance_type => EC2::InstanceType::C1_LARGE, :image_id => "ami-dc789fb5"
-# end
-# stack.app1.running?
 module Awsymandias
   module EC2
     class ApplicationStack
