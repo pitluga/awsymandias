@@ -3,15 +3,30 @@
 # It inherits from ARes::B in order to provide simple XML <-> domain model mapping.
 module Awsymandias
   module EC2
-    class Instance < ActiveResource::Base
+    class Instance
       include Awsymandias::Support::Hash
       extend  Awsymandias::Support::Hash # reformat_incoming_param_data
 
-      self.site = "mu"
+
+      ATTRIBUTES = [
+        :instance_id, :instance_state, :instance_type, :image_id, :placement, 
+        :dns_name, :private_dns_name, :launch_time, :key_name
+      ]
+      
+      hash_initializer *ATTRIBUTES
+      attr_reader *ATTRIBUTES
 
       def id;          instance_id;      end
       def public_dns;  dns_name;         end
       def private_dns; private_dns_name; end
+      
+      def instance_type
+        Awsymandias::EC2.instance_types[@instance_type]
+      end
+
+      def launch_time
+        Time.parse(@launch_time)
+      end
 
       def pending?
         instance_state.name == "pending"
@@ -38,12 +53,18 @@ module Awsymandias
       end
 
       def reload
-        load(reformat_incoming_param_data(
-          EC2.connection.describe_instances(:instance_id => [ self.instance_id ])["reservationSet"]["item"].
-          first["instancesSet"]["item"].
-          first # Good lord.
-        ))
+        response = EC2.connection.describe_instances(:instance_id => [ self.instance_id ])
+        instance_data = response["reservationSet"]["item"].first["instancesSet"]["item"].first
+        load(reformat_incoming_param_data(instance_data))
       end
+      
+      def load(new_values_hash)
+        ATTRIBUTES.each do |attribute|
+          self.instance_variable_set "@#{attribute}", new_values_hash[attribute.to_s]
+        end
+        self
+      end
+        
 
       def to_params
         {
@@ -52,14 +73,6 @@ module Awsymandias
           :instance_type => self.instance_type,
           :availability_zone => self.placement.availability_zone
         }
-      end
-
-      def instance_type
-        Awsymandias::EC2.instance_types[@attributes['instance_type']]
-      end
-
-      def launch_time
-        Time.parse(@attributes['launch_time'])
       end
 
       def uptime
@@ -91,7 +104,7 @@ module Awsymandias
           else
             reservation_set["item"].sum([]) do |item_set|
               item_set["instancesSet"]["item"].map do |item|
-                instantiate_record(reformat_incoming_param_data(item))
+                self.new(reformat_incoming_param_data(item))
               end
             end
           end
@@ -103,7 +116,7 @@ module Awsymandias
             raise ActiveResource::ResourceNotFound, "not found: #{id}"
           else
             reservation_set["item"].first["instancesSet"]["item"].map do |item|
-              instantiate_record(reformat_incoming_param_data(item))
+              self.new(reformat_incoming_param_data(item))
             end.first
           end
         end

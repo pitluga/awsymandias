@@ -8,6 +8,7 @@ require 'activeresource'
 require 'net/telnet'
 
 require File.dirname(__FILE__) + '/awsymandias/support/hash'
+require File.dirname(__FILE__) + '/awsymandias/support/class_extension'
 require File.dirname(__FILE__) + '/awsymandias/simple_db'
 require File.dirname(__FILE__) + '/awsymandias/ec2/instance'
 require File.dirname(__FILE__) + '/awsymandias/ec2/application_stack'
