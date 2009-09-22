@@ -1,6 +1,4 @@
-require 'rubygems'
-require 'spec'
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/awsymandias")
+require File.expand_path(File.dirname(__FILE__) + "/unit_spec_helper")
 
 describe Awsymandias do
   describe Awsymandias::SimpleDB do
