@@ -1,7 +1,7 @@
 module Awsymandias
   module EC2
     class ApplicationStack
-      attr_reader :name, :instances, :sdb_domain
+      attr_reader :name, :instances, :volumes, :sdb_domain
 
       DEFAULT_SDB_DOMAIN = "application-stack"
 
@@ -24,8 +24,10 @@ module Awsymandias
 
         @name       = name
         @instances  = opts[:instances] || {}
+        @volumes    = {}
         @sdb_domain = opts[:sdb_domain] || DEFAULT_SDB_DOMAIN
         @running_instances  = {}
+        @allocated_volumes  = {}
         yield self if block_given?
       end
 
@@ -36,7 +38,15 @@ module Awsymandias
           self.metaclass.send(:define_method, name) { @running_instances[name] }
         end
       end
-
+      
+      def volume(*names)
+        options = names.extract_options!
+        names.each do |name|
+          @volumes[name] = options
+          self.metaclass.send(:define_method, name) { @allocated_volumes[name] }
+        end
+      end
+      
       def launch
         @instances.each do |name, params| # TODO Optimize this for a single remote call.
           @running_instances[name] = Awsymandias::EC2::Instance.launch(params)

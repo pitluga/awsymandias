@@ -92,6 +92,30 @@ describe ApplicationStack = Awsymandias::EC2::ApplicationStack do
       stack.app1.should be_nil
     end
   end
+  
+  describe "volume" do
+    it "should allow for the definition of a basic volume" do
+      stack = ApplicationStack.new("foo") do |s|
+        s.volume :db
+      end
+      stack.volumes[:db].should == {}
+    end
+    
+    it "should allow for multiple volumes with the same set of parameters" do
+      stack = ApplicationStack.new("foo") do |s|
+        s.volume :db, :bak, :foo => 'bar'
+      end
+      stack.volumes[:db].should == { :foo => 'bar' }      
+      stack.volumes[:bak].should == { :foo => 'bar' }      
+    end
+    
+    it "should create an accessor for the volume" do
+      stack = ApplicationStack.new("foo") do |s|
+        s.volume :db
+      end
+      stack.db.should be_nil
+    end
+  end
 
   describe "sdb_domain" do
     it "should map to ApplicationStack::DEFAULT_SDB_DOMAIN upon creation" do
