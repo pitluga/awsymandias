@@ -1,6 +1,4 @@
-require 'rubygems'
-require 'spec'
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/awsymandias")
+require File.expand_path(File.dirname(__FILE__) + "/../spec_helper")
 
 describe 'a launched instance' do
   
@@ -9,7 +7,8 @@ describe 'a launched instance' do
     Awsymandias.secret_access_key = ENV['AMAZON_SECRET_ACCESS_KEY']
     
     @stack = Awsymandias::EC2::ApplicationStack.new('instances') do |s|
-      s.instance :box,  :image_id => 'ami-20b65349'
+      s.instance :box,  :image_id => 'ami-20b65349', :availability_zone => Awsymandias::EC2::AvailabilityZones::US_EAST_1B
+      s.volume   :db, :availability_zone => Awsymandias::EC2::AvailabilityZones::US_EAST_1B
     end
     
     @stack.launch

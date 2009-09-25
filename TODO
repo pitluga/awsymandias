@@ -1,0 +1,22 @@
+Implement Volume & Snapshot
+
+Extract likely common bits:
+  - pulling crap out of the hashes
+  - load / reload / find
+  - saving to simple db
+  - think about a AwsResource or some such bs as a superclass
+
+Reconstruct the DSL:
+  - extract DSL class again
+  - create the concept of a launchable
+  - have ApplicationStack known only about launchable
+  - handle attaching of volumes to snapshot be a launchable
+
+Create the capistrano integration
+  - add the concept of a role to awsymandias
+  - create the stack keyword
+  
+  
+Think about naming for stacks:
+  - data center?
+  - topology?

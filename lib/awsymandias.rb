@@ -10,7 +10,9 @@ require 'net/telnet'
 require File.dirname(__FILE__) + '/awsymandias/support/hash'
 require File.dirname(__FILE__) + '/awsymandias/support/class_extension'
 require File.dirname(__FILE__) + '/awsymandias/simple_db'
+require File.dirname(__FILE__) + '/awsymandias/ec2/ec2_resource'
 require File.dirname(__FILE__) + '/awsymandias/ec2/instance'
+require File.dirname(__FILE__) + '/awsymandias/ec2/volume'
 require File.dirname(__FILE__) + '/awsymandias/ec2/application_stack'
 
 module Awsymandias
@@ -21,11 +23,11 @@ module Awsymandias
     Awsymandias.verbose = false
     
     def access_key_id
-      @access_key_id || AMAZON_ACCESS_KEY_ID || ENV['AMAZON_ACCESS_KEY_ID'] 
+      @access_key_id || ENV['AMAZON_ACCESS_KEY_ID']
     end
     
     def secret_access_key
-      @secret_access_key || AMAZON_SECRET_ACCESS_KEY || ENV['AMAZON_SECRET_ACCESS_KEY']
+      @secret_access_key || ENV['AMAZON_SECRET_ACCESS_KEY']
     end
     
     def wait_for(message, refresh_seconds, &block)
