@@ -4,7 +4,7 @@ class EC2Resource
   
   class << self
     def metadata
-      @@metadata ||= {}
+      @metadata ||= {}
     end
     
     def attributes(*names)
@@ -19,12 +19,7 @@ class EC2Resource
     end
     
     def build_from_service(aws_hash)
-      attrs = {}
-      metadata.each_pair do |name, mapper|
-        attrs[name] = mapper.call(aws_hash)
-        attrs
-      end
-      self.new(attrs)
+      self.new.load(aws_hash)
     end
     
     def nilsafe(&block)
@@ -32,6 +27,13 @@ class EC2Resource
     rescue
       nil
     end
+  end
+
+  def load(aws_hash)
+    self.class.metadata.each_pair do |name, mapper|
+      instance_variable_set :"@#{name}", mapper.call(aws_hash)
+    end
+    self
   end
   
   def initialize(attrs = {})

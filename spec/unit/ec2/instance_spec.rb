@@ -178,7 +178,7 @@ describe Instance = Awsymandias::EC2::Instance do
     it "should be a single increment if the instance was launched 5 minutes ago" do
       stub_connection_with InstanceFactory.describe_instances_single_result_running_xml
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
-      instance.instance_variable_set :@launch_time, 5.minutes.ago.to_s
+      instance.instance_variable_set :@launch_time, 5.minutes.ago
       expected_cost = instance.instance_type.price_per_hour
       instance.running_cost.should == expected_cost
     end
@@ -186,7 +186,7 @@ describe Instance = Awsymandias::EC2::Instance do
     it "should be a single increment if the instance was launched 59 minutes ago" do
       stub_connection_with InstanceFactory.describe_instances_single_result_running_xml
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
-      instance.instance_variable_set :@launch_time, 59.minutes.ago.to_s
+      instance.instance_variable_set :@launch_time, 59.minutes.ago
       expected_cost = instance.instance_type.price_per_hour
       instance.running_cost.should == expected_cost
     end
@@ -194,7 +194,7 @@ describe Instance = Awsymandias::EC2::Instance do
     it "should be two increments if the instance was launched 61 minutes ago" do
       stub_connection_with InstanceFactory.describe_instances_single_result_running_xml
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
-      instance.instance_variable_set :@launch_time, 61.minutes.ago.to_s
+      instance.instance_variable_set :@launch_time, 61.minutes.ago
       expected_cost = instance.instance_type.price_per_hour * 2
       instance.running_cost.should == expected_cost          
     end
@@ -202,7 +202,7 @@ describe Instance = Awsymandias::EC2::Instance do
     it "should be three increments if the instance was launched 150 minutes ago" do
       stub_connection_with InstanceFactory.describe_instances_single_result_running_xml
       instance = Awsymandias::EC2::Instance.find("i-some-instance")
-      instance.instance_variable_set :@launch_time, 150.minutes.ago.to_s
+      instance.instance_variable_set :@launch_time, 150.minutes.ago
       expected_cost = instance.instance_type.price_per_hour * 3
       instance.running_cost.should == expected_cost          
     end
